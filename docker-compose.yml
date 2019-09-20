@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  db:
+    build: ./database
+    image: {{ project_name }}/db
+    restart: always
+    container_name: {{ project_name }}-db
+
+  web:
+    build: .
+    image: {{ project_name }}/web
+    restart: always
+    container_name: {{ project_name }}-web
+    environment:
+      - DATABASE_URL=postgres://{{ project_name }}:{{ project_name }}@db/{{ project_name }}
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+
+networks:
+  default:
+    name: {{ project_name }}-network
